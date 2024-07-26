@@ -34,6 +34,7 @@ const globalStore = observable({
   theme: 'mapbox://styles/mapbox/streets-v12',
   time: '',
   totalDistance: 0,
+  goalDistance: 50,
   zoneId: 'Europe/London',
 });
 

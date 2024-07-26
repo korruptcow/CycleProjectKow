@@ -45,6 +45,12 @@ const handleDistance = () => {
       location.value.latitude,
       location.value.longitude
     ))
+    globalStore.goalDistance.set(globalStore.goalDistance.get() - getDistanceFromLatLonInKm(
+        location.getPrevious().latitude,
+        location.getPrevious().longitude,
+        location.value.latitude,
+        location.value.longitude
+    ))
   })
 };
 

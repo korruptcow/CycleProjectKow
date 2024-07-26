@@ -18,6 +18,13 @@ const handleStreamElements = () => {
     globalStore.streamElements.set(data.data.data);
   };
 
+  // Update goal distance
+  const updateGoalDistance = async (eventData) => {
+    // switch case on event type and compute the kms to add depending on sub / gift sub / donation
+    console.log(eventData);
+    globalStore.goalDistance.set(globalStore.goalDistance.get() + 1);
+  };
+
   //* Subscribe to streamelements websocket using socket.io
   const subStreamElements = async () => {
     const JWT = streamElementsKey;
@@ -57,7 +64,10 @@ const handleStreamElements = () => {
      * As such, I'm just retriggering the initial fetch function to the HTTP based API, 
      * which grabs the entire channel data and chucking it into the store again.
      */
-    socket.on('event', () => { fetchData() })
+    socket.on('event', (data) => {
+      fetchData();
+      updateGoalDistance(data);
+    })
   };
 
   if (streamElementsKey && !streamElementsSubscribed) {
