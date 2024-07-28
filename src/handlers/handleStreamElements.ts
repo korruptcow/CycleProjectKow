@@ -22,7 +22,20 @@ const handleStreamElements = () => {
   const updateGoalDistance = async (eventData) => {
     // switch case on event type and compute the kms to add depending on sub / gift sub / donation
     console.log(eventData);
-    globalStore.goalDistance.set(globalStore.goalDistance.get() + 1);
+    switch(eventData.type) {
+      case 'subscriber':
+        if (eventData.data) {
+          globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.subRatio.get() * eventData.data.amount);
+        }
+        break;
+      case 'tip':
+        if (eventData.data) {
+          globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.donationRatio.get() * eventData.data.amount);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   //* Subscribe to streamelements websocket using socket.io

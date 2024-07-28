@@ -30,7 +30,7 @@ const handleDistance = () => {
   // Check for a sessionId, reset totalDistance if it changes as this indicates stream start.
   globalStore.sessionId.onChange((sessionId) => {
     if (sessionId.value && sessionId.value !== sessionId.getPrevious()) {
-      globalStore.totalDistance.set(0)
+      globalStore.sessionDistance.set(0)
     }
   })
 
@@ -44,6 +44,12 @@ const handleDistance = () => {
       location.getPrevious().longitude,
       location.value.latitude,
       location.value.longitude
+    ))
+    globalStore.sessionDistance.set(globalStore.sessionDistance.get() + getDistanceFromLatLonInKm(
+        location.getPrevious().latitude,
+        location.getPrevious().longitude,
+        location.value.latitude,
+        location.value.longitude
     ))
     globalStore.goalDistance.set(globalStore.goalDistance.get() - getDistanceFromLatLonInKm(
         location.getPrevious().latitude,

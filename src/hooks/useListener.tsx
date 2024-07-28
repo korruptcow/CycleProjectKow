@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { forPullKey } from '@rtirl/api';
 
-import globalStore from '@store/globalStore';
 import keyStore from '@store/keyStore';
+import globalStore from "@store/globalStore.ts";
 
 interface IListenerProps {
   altitude: { EGM96: number, WGS84: number };
