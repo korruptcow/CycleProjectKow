@@ -53,7 +53,7 @@ globalStore.goalDistance.onChange(() => {
     saveToLocalStorage('goalDistance', globalStore.goalDistance.get());
 });
 
-globalStore.goalDistance.onChange(() => {
+globalStore.modsWhitelist.onChange(() => {
     saveToLocalStorage('modsWhitelist', globalStore.modsWhitelist.get());
 });
 
