@@ -1,6 +1,6 @@
 import {observable} from "@legendapp/state";
 import {defaultWeatherValues} from "@components/Weather/defaultWeatherValues";
-import {loadFromLocalStorage, saveToLocalStorage} from "@store/persistence.ts";
+import {loadFloatFromLocalStorage, loadListFromLocalStorage, saveToLocalStorage} from "@store/persistence.ts";
 
 const globalStore = observable({
     altitude: {
@@ -35,8 +35,9 @@ const globalStore = observable({
     theme: 'mapbox://styles/mapbox/streets-v12',
     time: '',
     sessionDistance: 0,
-    totalDistance: loadFromLocalStorage('totalDistance'),
-    goalDistance: loadFromLocalStorage('goalDistance'),
+    totalDistance: loadFloatFromLocalStorage('totalDistance'),
+    goalDistance: loadFloatFromLocalStorage('goalDistance'),
+    modsWhitelist: loadListFromLocalStorage('modsWhitelist'),
     subRatio: 0.3,
     donationRatio: 0.1,
     zoneId: 'Europe/London',
@@ -50,6 +51,10 @@ globalStore.totalDistance.onChange(() => {
 
 globalStore.goalDistance.onChange(() => {
     saveToLocalStorage('goalDistance', globalStore.goalDistance.get());
+});
+
+globalStore.goalDistance.onChange(() => {
+    saveToLocalStorage('modsWhitelist', globalStore.modsWhitelist.get());
 });
 
 
