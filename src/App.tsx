@@ -58,7 +58,7 @@ function App() {
     };
 
     const parseCommand = (data: string) => {
-        const commandMatch = data.match(/:(\w+)!.* PRIVMSG #\w+ :!(\w+)(?: (\w+))?(?: (\w+))?(?: (\d+(\.\d+)?))?/);
+        const commandMatch = data.match(/:(\w+)!.* PRIVMSG #\w+ :!(\w+)(?: (\w+))?(?: ?(-?\d+(?:\.\d*)?)?)/);
         if (commandMatch) {
             const [_, userName, commandType, target, value] = commandMatch;
             if (commandType === 'mod' || commandType === 'unmod') {
@@ -66,7 +66,7 @@ function App() {
                     const command = { type: commandType, targetUser: target };
                     executeModCommand(command);
                 }
-            } else if (globalStore.modsWhitelist.get().includes(userName)) {
+            } else if (globalStore.modsWhitelist.get().includes(userName) && value != undefined) {
                 const command = { type: commandType, target, value: parseFloat(value) };
                 executeCommand(command);
             }
