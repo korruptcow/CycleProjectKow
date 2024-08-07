@@ -37,10 +37,12 @@ const globalStore = observable({
     sessionDistance: 0,
     totalDistance: loadFloatFromLocalStorage('totalDistance'),
     goalDistance: loadFloatFromLocalStorage('goalDistance'),
-    modsWhitelist: loadListFromLocalStorage('modsWhitelist'),
+    modsWhitelist: observable(loadListFromLocalStorage('modsWhitelist')),
     subRatio: 0.3,
     donationRatio: 0.1,
-    zoneId: 'Europe/London',
+    trackingPaused: false,
+    currency: '€',
+    zoneId: 'Europe/Paris',
 });
 
 
@@ -54,7 +56,8 @@ globalStore.goalDistance.onChange(() => {
 });
 
 globalStore.modsWhitelist.onChange(() => {
-    saveToLocalStorage('modsWhitelist', globalStore.modsWhitelist.get());
+    console.log('test')
+    saveToLocalStorage('modsWhitelist', globalStore.modsWhitelist.peek());
 });
 
 

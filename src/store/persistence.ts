@@ -28,7 +28,7 @@ export function loadListFromLocalStorage(key: string): string[] {
         if (serializedValue === null) {
             return [keyStore.twitchUserName.get()];
         }
-        return JSON.parse(serializedValue);
+        return JSON.parse(serializedValue) as string[];
     } catch (error) {
         console.error('Error loading from local storage', error);
         return [keyStore.twitchUserName.get()];

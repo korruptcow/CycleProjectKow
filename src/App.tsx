@@ -11,6 +11,7 @@ import './App.scss';
 import useWebSocket from "react-use-websocket";
 import keyStore from "@store/keyStore.ts";
 import globalStore from "@store/globalStore.ts";
+import configStore from "@store/configStore.ts";
 
 function App() {
 
@@ -52,6 +53,10 @@ function App() {
         parseCommand(data);
     };
 
+    const sendChatMessage = (message: string) => {
+        sendMessage(`PRIVMSG #${keyStore.twitchUserName.get()} :${message}`);
+    };
+
     const sendPong = (message: string) => {
         console.debug('Sending PONG...');
         sendMessage(`PONG :${message}`);
@@ -61,17 +66,98 @@ function App() {
         const commandMatch = data.match(/:(\w+)!.* PRIVMSG #\w+ :!(\w+)(?: (\w+))?(?: ?(-?\d+(?:\.\d*)?)?)/);
         if (commandMatch) {
             const [_, userName, commandType, target, value] = commandMatch;
-            if (commandType === 'mod' || commandType === 'unmod') {
-                if (keyStore.twitchUserName.get() === userName || globalStore.modsWhitelist.get().includes(userName)) {
-                    const command = { type: commandType, targetUser: target };
+            if (commandType === configStore.commands.get().addModerator ||
+                commandType === configStore.commands.get().removeModerator ||
+                commandType === configStore.commands.get().pauseTracking ||
+                commandType === configStore.commands.get().unpauseTracking) {
+                if (keyStore.twitchUserName.get() === userName || globalStore.modsWhitelist.peek().includes(userName)) {
+                    const command = { type: commandType, targetUser: target , userName: userName};
                     executeModCommand(command);
                 }
-            } else if (globalStore.modsWhitelist.get().includes(userName) && value != undefined) {
+            } else if (globalStore.modsWhitelist.peek().includes(userName) && value != undefined) {
                 const command = { type: commandType, target, value: parseFloat(value) };
                 executeCommand(command);
             }
         }
     };
+
+    const executeModCommand = (command: { type: string; targetUser: string; userName: string }) => {
+        console.log('Executing mod command', command);
+        switch (command.type) {
+            case configStore.commands.get().addModerator:
+                if (!globalStore.modsWhitelist.peek().includes(command.targetUser)) {
+                    addMod(command.targetUser)
+                    sendChatMessage(`${command.userName} added ${command.targetUser} to the whitelist.`);
+                    console.info(`${command.userName}  added ${command.targetUser} to the whitelist.`);
+                }
+                break;
+            case configStore.commands.get().removeModerator:
+                if (globalStore.modsWhitelist.peek().includes(command.targetUser)) {
+                    removeMod(command.targetUser)
+                    sendChatMessage(`${command.userName} removed ${command.targetUser} from the whitelist.`);
+                    console.info(`${command.userName} removed ${command.targetUser} from the whitelist.`);
+                }
+                break;
+            case configStore.commands.get().pauseTracking:
+                globalStore.trackingPaused.set(true);
+                sendChatMessage(`tracking paused by ${command.userName}.`);
+                console.info(`tracking paused by ${command.userName}.`);
+                break;
+            case configStore.commands.get().unpauseTracking:
+                globalStore.trackingPaused.set(false);
+                sendChatMessage(`tracking unpaused by ${command.userName}.`);
+                console.info(`tracking unpaused by ${command.userName}.`);
+                break;
+            default:
+                console.warn('Unknown mod command type:', command.type);
+        }
+    };
+
+    const executeCommand = (command: { type: string; target: string; value: number }) => {
+        console.log('Executing command', command);
+        switch (command.type) {
+            case configStore.commands.get().addAmountKm:
+                if (command.target === configStore.targets.get().goalDistance) {
+                    globalStore.goalDistance.set(globalStore.goalDistance.get() + command.value);
+                    sendChatMessage(`Added ${command.value} km to goalDistance.`);
+                } else if (command.target === configStore.targets.get().totalDistance) {
+                    globalStore.totalDistance.set(globalStore.totalDistance.get() + command.value);
+                    sendChatMessage(`Added ${command.value} km to totalDistance.`);
+                }
+                break;
+            case configStore.commands.get().minusAmountKm:
+                if (command.target === configStore.targets.get().goalDistance) {
+                    globalStore.goalDistance.set(globalStore.goalDistance.get() - command.value);
+                    sendChatMessage(`Removed ${command.value} km from goalDistance.`);
+                } else if (command.target === configStore.targets.get().totalDistance) {
+                    globalStore.totalDistance.set(globalStore.totalDistance.get() - command.value);
+                    sendChatMessage(`Removed ${command.value} km from totalDistance.`);
+                }
+                break;
+            case configStore.commands.get().updateRate:
+                if (command.target === configStore.targets.get().tip) {
+                    globalStore.donationRatio.set(command.value);
+                    sendChatMessage(`Distance per 1${globalStore.currency.get()} ${command.value} km.`);
+                } else if (command.target === configStore.targets.get().sub) {
+                    globalStore.subRatio.set(command.value);
+                    sendChatMessage(`Distance per 1 sub ${command.value} km.`);
+                }
+                break;
+            // add cases here
+            default:
+                console.warn('Unknown command type:', command.type);
+        }
+    };
+
+    // Function to add a mod to the whitelist and notify observers
+    function addMod(mod: string) {
+        globalStore.modsWhitelist.set([...globalStore.modsWhitelist.get(), mod]);
+    }
+
+    // Function to remove a mod from the whitelist and notify observers
+    function removeMod(mod: string) {
+        globalStore.modsWhitelist.set(globalStore.modsWhitelist.get().filter(m => m !== mod));
+    }
 
     const authenticateAndJoin = () => {
         const twitchUserToken = keyStore.twitchUserToken.get();
@@ -106,48 +192,6 @@ function App() {
 }
 
 
-const executeModCommand = (command: { type: string; targetUser: string }) => {
-    console.log('Executing mod command', command);
-    switch (command.type) {
-        case 'mod':
-            if (!globalStore.modsWhitelist.get().includes(command.targetUser)) {
-                globalStore.modsWhitelist.get().push(command.targetUser);
-                console.info(`Added ${command.targetUser} to the whitelist.`);
-            }
-            break;
-        case 'unmod':
-            if (globalStore.modsWhitelist.get().includes(command.targetUser)) {
-                const existingWhitelist = globalStore.modsWhitelist.get();
-                const index = existingWhitelist.indexOf(command.targetUser);
-                existingWhitelist.splice(index,1);
-                console.info(`Removed ${command.targetUser} from the whitelist.`);
-            }
-            break;
-        default:
-            console.warn('Unknown mod command type:', command.type);
-    }
-};
 
-const executeCommand = (command: { type: string; target: string; value: number }) => {
-    console.log('Executing command', command);
-    switch (command.type) {
-        case 'add':
-            if (command.target === 'goalDistance') {
-                globalStore.goalDistance.set(globalStore.goalDistance.get() + command.value);
-            } else if (command.target === 'totalDistance') {
-                globalStore.totalDistance.set(globalStore.totalDistance.get() + command.value);
-            }
-            break;
-        case 'minus':
-            if (command.target === 'goalDistance') {
-                globalStore.goalDistance.set(globalStore.goalDistance.get() - command.value);
-            } else if (command.target === 'totalDistance') {
-                globalStore.totalDistance.set(globalStore.totalDistance.get() - command.value);
-            }
-            break;
-        default:
-            console.warn('Unknown command type:', command.type);
-    }
-};
 
 export default App;

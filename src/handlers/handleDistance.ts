@@ -39,24 +39,27 @@ const handleDistance = () => {
     // Ignore location and return if the previous lat/lon was 0 - this indicates cold start - GPS often jumps from 0 to new location.
     if (!location.getPrevious().latitude && !location.getPrevious().longitude) return
     // Otherwise, calculate distance between previous and current location and add to total distance
-    globalStore.totalDistance.set(globalStore.totalDistance.get() + getDistanceFromLatLonInKm(
-      location.getPrevious().latitude,
-      location.getPrevious().longitude,
-      location.value.latitude,
-      location.value.longitude
-    ))
-    globalStore.sessionDistance.set(globalStore.sessionDistance.get() + getDistanceFromLatLonInKm(
-        location.getPrevious().latitude,
-        location.getPrevious().longitude,
-        location.value.latitude,
-        location.value.longitude
-    ))
-    globalStore.goalDistance.set(globalStore.goalDistance.get() - getDistanceFromLatLonInKm(
-        location.getPrevious().latitude,
-        location.getPrevious().longitude,
-        location.value.latitude,
-        location.value.longitude
-    ))
+    if (!globalStore.trackingPaused.get()) {
+      globalStore.totalDistance.set(globalStore.totalDistance.get() + getDistanceFromLatLonInKm(
+          location.getPrevious().latitude,
+          location.getPrevious().longitude,
+          location.value.latitude,
+          location.value.longitude
+      ));
+      globalStore.sessionDistance.set(globalStore.sessionDistance.get() + getDistanceFromLatLonInKm(
+          location.getPrevious().latitude,
+          location.getPrevious().longitude,
+          location.value.latitude,
+          location.value.longitude
+      ));
+      globalStore.goalDistance.set(globalStore.goalDistance.get() - getDistanceFromLatLonInKm(
+          location.getPrevious().latitude,
+          location.getPrevious().longitude,
+          location.value.latitude,
+          location.value.longitude
+      ));
+    }
+
   })
 };
 
