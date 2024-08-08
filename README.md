@@ -140,8 +140,8 @@ The following commands can be used to interact with the overlay:
   - Example: `!cycleMinus totalDistance 1.0`
 
 - **Update Rate**
-  - Command: `!cycleUpdateRatio <value>`
-  - Example: `!cycleUpdateRatio 1.2`
+  - Command: `!cycleUpdateRatio <tip or sub> <value>`
+  - Example: `!cycleUpdateRatio tip 0.1`
 
 ### Tracking Control
 
