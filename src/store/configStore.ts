@@ -9,10 +9,14 @@ const configStore = observable({
         updateRate: 'cycleUpdateRatio',
         pauseTracking: 'cyclePause',
         unpauseTracking: 'cycleUnpause',
+        resetCurrentSession: 'cycleRestartSession',
+        hideMap: 'cycleHideMap',
+        showMap: 'cycleShowMap',
     },
     targets: {
         goalDistance: 'goalDistance',
         totalDistance: 'totalDistance',
+        sessionDistance: 'sessionDistance',
         tip: 'tip',
         sub: 'sub',
     }

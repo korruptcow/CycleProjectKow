@@ -65,11 +65,17 @@ function App() {
     const parseCommand = (data: string) => {
         const commandMatch = data.match(/:(\w+)!.* PRIVMSG #\w+ :!(\w+)(?: (\w+))?(?: ?(-?\d+(?:\.\d*)?)?)/);
         if (commandMatch) {
+            const modCommands = [
+                configStore.commands.get().addModerator,
+                configStore.commands.get().removeModerator,
+                configStore.commands.get().pauseTracking,
+                configStore.commands.get().unpauseTracking,
+                configStore.commands.get().resetCurrentSession,
+                configStore.commands.get().hideMap,
+                configStore.commands.get().showMap
+            ];
             const [_, userName, commandType, target, value] = commandMatch;
-            if (commandType === configStore.commands.get().addModerator ||
-                commandType === configStore.commands.get().removeModerator ||
-                commandType === configStore.commands.get().pauseTracking ||
-                commandType === configStore.commands.get().unpauseTracking) {
+            if (modCommands.includes(commandType)) {
                 if (keyStore.twitchUserName.get() === userName || globalStore.modsWhitelist.peek().includes(userName)) {
                     const command = { type: commandType, targetUser: target , userName: userName};
                     executeModCommand(command);
@@ -108,6 +114,23 @@ function App() {
                 sendChatMessage(`tracking unpaused by ${command.userName}.`);
                 console.info(`tracking unpaused by ${command.userName}.`);
                 break;
+            case configStore.commands.get().resetCurrentSession:
+                globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.goalDistance.get())
+                globalStore.totalDistance.set(globalStore.totalDistance.get() - globalStore.totalDistance.get())
+                globalStore.sessionDistance.set(0);
+                sendChatMessage(`Today's session restarted by ${command.userName}.`);
+                console.info(`Today's session restarted by ${command.userName}.`);
+                break;
+            case configStore.commands.get().hideMap:
+                globalStore.hideMap.set(true);
+                sendChatMessage(`Map hidden by ${command.userName}.`);
+                console.info(`Map hidden by ${command.userName}.`);
+                break;
+            case configStore.commands.get().showMap:
+                globalStore.hideMap.set(false);
+                sendChatMessage(`Map shown by ${command.userName}.`);
+                console.info(`Map shown by ${command.userName}.`);
+                break;
             default:
                 console.warn('Unknown mod command type:', command.type);
         }
@@ -123,6 +146,9 @@ function App() {
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() + command.value);
                     sendChatMessage(`Added ${command.value} km to totalDistance.`);
+                } else if (command.target === configStore.targets.get().sessionDistance) {
+                    globalStore.sessionDistance.set(globalStore.sessionDistance.get() + command.value);
+                    sendChatMessage(`Added ${command.value} km to today's distance.`);
                 }
                 break;
             case configStore.commands.get().minusAmountKm:
@@ -132,6 +158,9 @@ function App() {
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() - command.value);
                     sendChatMessage(`Removed ${command.value} km from totalDistance.`);
+                } else if (command.target === configStore.targets.get().sessionDistance) {
+                    globalStore.sessionDistance.set(globalStore.sessionDistance.get() - command.value);
+                    sendChatMessage(`Removed ${command.value} km from sessionDistance.`);
                 }
                 break;
             case configStore.commands.get().updateRate:

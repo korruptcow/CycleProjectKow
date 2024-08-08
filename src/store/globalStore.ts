@@ -34,7 +34,8 @@ const globalStore = observable({
     },
     theme: 'mapbox://styles/mapbox/streets-v12',
     time: '',
-    sessionDistance: 0,
+    hideMap: false,
+    sessionDistance: loadFloatFromLocalStorage('sessionDistance'),
     totalDistance: loadFloatFromLocalStorage('totalDistance'),
     goalDistance: loadFloatFromLocalStorage('goalDistance'),
     modsWhitelist: observable(loadListFromLocalStorage('modsWhitelist')),
@@ -53,6 +54,10 @@ globalStore.totalDistance.onChange(() => {
 
 globalStore.goalDistance.onChange(() => {
     saveToLocalStorage('goalDistance', globalStore.goalDistance.get());
+});
+
+globalStore.sessionDistance.onChange(() => {
+    saveToLocalStorage('sessionDistance', globalStore.sessionDistance.get());
 });
 
 globalStore.modsWhitelist.onChange(() => {

@@ -91,10 +91,10 @@ const handleNeighbourhood = () => {
         console.error('Error fetching neighborhood data:', error);
       });
   };
-  // Get neighbourhood data from mapbox every 10 seconds
+  // Get neighbourhood data from mapbox every 60 seconds
   setInterval(() => {
     getNeighbourhood();
-  }, 10000);
+  }, 60000);
 };
 
 handleNeighbourhood();

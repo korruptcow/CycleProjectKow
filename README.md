@@ -109,6 +109,82 @@ Follow the above instructions to add the overlay to OBS, ensuring that `:5173` i
 > Existing users:  
 > Bundler changed from CRA to Vite, browser source URL changes from http://localhost:3000 to http://localhost:5173
 
+---
+
+# Overlay Control via Chat Commands
+
+This project now includes chat commands that can be used by approved moderators to update and control the overlay. These commands allow moderators to adjust various metrics and settings directly from the chat.
+
+## Chat Commands
+
+The following commands can be used to interact with the overlay:
+
+### Moderator Management
+
+- **Add a Moderator**
+  - Command: `!cycleMod <username>`
+  - Example: `!cycleMod toto`
+
+- **Remove a Moderator**
+  - Command: `!cycleUnmod <username>`
+  - Example: `!cycleUnmod toto`
+
+### Distance Tracking
+
+- **Add Distance**
+  - Command: `!cycleAdd <target> <value>`
+  - Example: `!cycleAdd totalDistance 2.5`
+
+- **Subtract Distance**
+  - Command: `!cycleMinus <target> <value>`
+  - Example: `!cycleMinus totalDistance 1.0`
+
+- **Update Rate**
+  - Command: `!cycleUpdateRatio <value>`
+  - Example: `!cycleUpdateRatio 1.2`
+
+### Tracking Control
+
+- **Pause Tracking**
+  - Command: `!cyclePause`
+
+- **Unpause Tracking**
+  - Command: `!cycleUnpause`
+
+- **Reset Current Session**
+  - Command: `!cycleRestartSession`
+
+### Map Visibility
+
+- **Hide Map**
+  - Command: `!cycleHideMap`
+
+- **Show Map**
+  - Command: `!cycleShowMap`
+
+## Targets
+
+The following targets can be specified with distance-related commands:
+
+- `goalDistance`: The goal distance to be reached.
+- `totalDistance`: The total distance covered.
+- `sessionDistance`: The distance covered in the current session.
+
+## Usage
+
+Moderators can type the commands directly in the chat to execute the corresponding actions. Only approved moderators have the ability to use these commands.
+
+**Examples:**
+
+- Adding 2.5 to the total distance: `!cycleAdd totalDistance 2.5`
+- Pausing the tracking: `!cyclePause`
+- Adding a new moderator: `!cycleMod toto`
+- Hiding the map from the overlay: `!cycleHideMap`
+
+---
+
+This `README.md` now includes clear instructions on how to use the new chat commands to interact with the overlay.
+
 # Customisation
 URL parameters can be used for basic customisation of the output of the overlay. For more advanced customisation, you will need to edit the source code.  
 Each component has a `.scss` file in the `src/components` folder, which you can edit to change the appearance of each part of the overlay.

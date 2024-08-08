@@ -25,7 +25,7 @@ const Map = () => {
   const { hideMap, mapFollowsHeading, mapHasBorder, mapIs3d, mapIsCircular, mapZoom, pulseMarker, timeAtBottom } = flagStore.get();
   const { heading, location, theme } = globalStore.get();
   const { mapboxKey } = keyStore.get();
-
+  const hideMapStorage = globalStore.hideMap.get();
   mapboxgl.accessToken = mapboxKey;
 
   useEffect(() => {
@@ -183,7 +183,7 @@ const Map = () => {
         style={{
           borderRadius: mapIsCircular ? "50%" : "0%",
           border: mapHasBorder ? "2px solid #333" : "none",
-          display: hideMap ? 'none' : ''
+          display: hideMap && hideMapStorage ? 'none' : ''
         }}
       >
       </div>
