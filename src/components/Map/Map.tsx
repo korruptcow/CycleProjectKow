@@ -183,7 +183,7 @@ const Map = () => {
         style={{
           borderRadius: mapIsCircular ? "50%" : "0%",
           border: mapHasBorder ? "2px solid #333" : "none",
-          display: hideMap && hideMapStorage ? 'none' : ''
+          display: hideMap || hideMapStorage ? 'none' : ''
         }}
       >
       </div>

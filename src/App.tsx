@@ -115,8 +115,8 @@ function App() {
                 console.info(`tracking unpaused by ${command.userName}.`);
                 break;
             case configStore.commands.get().resetCurrentSession:
-                globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.goalDistance.get())
-                globalStore.totalDistance.set(globalStore.totalDistance.get() - globalStore.totalDistance.get())
+                globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.sessionDistance.get())
+                globalStore.totalDistance.set(globalStore.totalDistance.get() - globalStore.sessionDistance.get())
                 globalStore.sessionDistance.set(0);
                 sendChatMessage(`Today's session restarted by ${command.userName}.`);
                 console.info(`Today's session restarted by ${command.userName}.`);
