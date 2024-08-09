@@ -26,10 +26,21 @@ const Map = () => {
   const { heading, location, theme } = globalStore.get();
   const { mapboxKey } = keyStore.get();
   const hideMapStorage = globalStore.hideMap.get();
+  // New state to track if the map is visible
+  const [isMapVisible, setIsMapVisible] = useState(!hideMap && !hideMapStorage);
   mapboxgl.accessToken = mapboxKey;
 
+  // Effect to detect visibility changes
   useEffect(() => {
-    if (mapContainer.current) {
+    if (!hideMap && !hideMapStorage) {
+      setIsMapVisible(true);
+    } else {
+      setIsMapVisible(false);
+    }
+  }, [hideMap, hideMapStorage]);
+  
+  useEffect(() => {
+    if (mapContainer.current && isMapVisible) {
       mapContainer.current.innerHTML = '';
       const map = new mapboxgl.Map({
         style: theme,
@@ -163,17 +174,17 @@ const Map = () => {
       map3D?.remove();
       setMap3D(null)
     };
-  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [theme, isMapVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (map3D) {
+    if (map3D && isMapVisible) {
       map3D.easeTo({
         center: [location.longitude, location.latitude],
         zoom: parseInt(mapZoom),
         bearing: mapFollowsHeading ? heading : 0,
       });
     }
-  }, [location, heading, mapZoom]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [location, heading, mapZoom, isMapVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="map-container">
@@ -183,7 +194,7 @@ const Map = () => {
         style={{
           borderRadius: mapIsCircular ? "50%" : "0%",
           border: mapHasBorder ? "2px solid #333" : "none",
-          display: hideMap || hideMapStorage ? 'none' : ''
+          display: isMapVisible ? '' : 'none'
         }}
       >
       </div>
