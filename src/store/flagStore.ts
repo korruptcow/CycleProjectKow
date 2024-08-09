@@ -29,7 +29,7 @@ const flagStore = observable({
   showSpeed: getQueryParamFlag('showSpeed'),
   splitDateTime: getQueryParamFlag('splitDateTime'),
   streamElementsSubscribed: false,
-  theme: queryParams.get('theme') || 'mapbox://styles/mapbox/streets-v12',
+  theme: queryParams.get('theme') || 'mapbox-japan',
   timeAtBottom: getQueryParamFlag('timeAtBottom'),
   useImperial: getQueryParamFlag('useImperial'),
   zoomLevels: queryParams.get('zoomLevels') || '',
