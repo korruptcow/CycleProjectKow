@@ -61,7 +61,6 @@ globalStore.sessionDistance.onChange(() => {
 });
 
 globalStore.modsWhitelist.onChange(() => {
-    console.log('test')
     saveToLocalStorage('modsWhitelist', globalStore.modsWhitelist.peek());
 });
 

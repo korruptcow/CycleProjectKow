@@ -93,43 +93,43 @@ function App() {
             case configStore.commands.get().addModerator:
                 if (!globalStore.modsWhitelist.peek().includes(command.targetUser)) {
                     addMod(command.targetUser)
-                    sendChatMessage(`${command.userName} added ${command.targetUser} to the whitelist.`);
-                    console.info(`${command.userName}  added ${command.targetUser} to the whitelist.`);
+                    sendChatMessage(`${command.userName} a ajouté ${command.targetUser} de la whitelist.`);
+                    console.info(`${command.userName}  a ajouté ${command.targetUser} de la whitelist.`);
                 }
                 break;
             case configStore.commands.get().removeModerator:
                 if (globalStore.modsWhitelist.peek().includes(command.targetUser)) {
                     removeMod(command.targetUser)
-                    sendChatMessage(`${command.userName} removed ${command.targetUser} from the whitelist.`);
-                    console.info(`${command.userName} removed ${command.targetUser} from the whitelist.`);
+                    sendChatMessage(`${command.userName} a supprimé ${command.targetUser} de la whitelist.`);
+                    console.info(`${command.userName} a supprimé ${command.targetUser} de la whitelist.`);
                 }
                 break;
             case configStore.commands.get().pauseTracking:
                 globalStore.trackingPaused.set(true);
-                sendChatMessage(`tracking paused by ${command.userName}.`);
-                console.info(`tracking paused by ${command.userName}.`);
+                sendChatMessage(`tracking en pause par ${command.userName}.`);
+                console.info(`tracking en pause par ${command.userName}.`);
                 break;
             case configStore.commands.get().unpauseTracking:
                 globalStore.trackingPaused.set(false);
-                sendChatMessage(`tracking unpaused by ${command.userName}.`);
-                console.info(`tracking unpaused by ${command.userName}.`);
+                sendChatMessage(`tracking relancé par ${command.userName}.`);
+                console.info(`tracking relancé par ${command.userName}.`);
                 break;
             case configStore.commands.get().resetCurrentSession:
                 globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.sessionDistance.get())
                 globalStore.totalDistance.set(globalStore.totalDistance.get() - globalStore.sessionDistance.get())
                 globalStore.sessionDistance.set(0);
-                sendChatMessage(`Today's session restarted by ${command.userName}.`);
-                console.info(`Today's session restarted by ${command.userName}.`);
+                sendChatMessage(`Session d'aujourd'hui redémarrée par ${command.userName}.`);
+                console.info(`Session d'aujourd'hui redémarrée par ${command.userName}.`);
                 break;
             case configStore.commands.get().hideMap:
                 globalStore.hideMap.set(true);
-                sendChatMessage(`Map hidden by ${command.userName}.`);
-                console.info(`Map hidden by ${command.userName}.`);
+                sendChatMessage(`Map caché par ${command.userName}.`);
+                console.info(`Map caché par ${command.userName}.`);
                 break;
             case configStore.commands.get().showMap:
                 globalStore.hideMap.set(false);
-                sendChatMessage(`Map shown by ${command.userName}.`);
-                console.info(`Map shown by ${command.userName}.`);
+                sendChatMessage(`Map affiché par ${command.userName}.`);
+                console.info(`Map affiché par ${command.userName}.`);
                 break;
             default:
                 console.warn('Unknown mod command type:', command.type);
@@ -142,25 +142,25 @@ function App() {
             case configStore.commands.get().addAmountKm:
                 if (command.target === configStore.targets.get().goalDistance) {
                     globalStore.goalDistance.set(globalStore.goalDistance.get() + command.value);
-                    sendChatMessage(`Added ${command.value} km to goalDistance.`);
+                    sendChatMessage(`Ajout de ${command.value} km au compteur du goal.`);
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() + command.value);
-                    sendChatMessage(`Added ${command.value} km to totalDistance.`);
+                    sendChatMessage(`Ajout de ${command.value} km à la distance totale.`);
                 } else if (command.target === configStore.targets.get().sessionDistance) {
                     globalStore.sessionDistance.set(globalStore.sessionDistance.get() + command.value);
-                    sendChatMessage(`Added ${command.value} km to today's distance.`);
+                    sendChatMessage(`Ajout de ${command.value} km à la distance du jour.`);
                 }
                 break;
             case configStore.commands.get().minusAmountKm:
                 if (command.target === configStore.targets.get().goalDistance) {
                     globalStore.goalDistance.set(globalStore.goalDistance.get() - command.value);
-                    sendChatMessage(`Removed ${command.value} km from goalDistance.`);
+                    sendChatMessage(`Suppression de ${command.value} km au compteur du goal.`);
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() - command.value);
-                    sendChatMessage(`Removed ${command.value} km from totalDistance.`);
+                    sendChatMessage(`Suppression de ${command.value} km à la distance totale.`);
                 } else if (command.target === configStore.targets.get().sessionDistance) {
                     globalStore.sessionDistance.set(globalStore.sessionDistance.get() - command.value);
-                    sendChatMessage(`Removed ${command.value} km from sessionDistance.`);
+                    sendChatMessage(`Suppression de ${command.value} km à la distance du jour.`);
                 }
                 break;
             case configStore.commands.get().updateRate:

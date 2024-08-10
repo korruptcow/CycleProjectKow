@@ -23,7 +23,7 @@ const valueFormatter = (type: string, inputValue: number) => {
   // temperature from celsius to fahrenheit
   if (type === 'temperature') {
     return {
-      metric: `${(inputValue).toFixed(2)} °C`,
+      metric: `${(inputValue).toFixed(0)} °C`,
       imperial: `${(inputValue * 9 / 5 + 32).toFixed(2)} °F`
     }
   }
