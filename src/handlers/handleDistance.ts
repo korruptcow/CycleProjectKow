@@ -46,7 +46,10 @@ const handleDistance = () => {
   globalStore.location.onChange((location) => {
     // Ignore location and return if the previous lat/lon was 0 - this indicates cold start - GPS often jumps from 0 to new location.
     if (!location.getPrevious().latitude && !location.getPrevious().longitude) return;
-    if (globalStore.lastLocationUpdate.get() !== 0 && Date.now() - globalStore.lastLocationUpdate.get() > 60_000) return;
+    if (globalStore.lastLocationUpdate.get() !== 0 && Date.now() - globalStore.lastLocationUpdate.get() > 60_000) {
+      globalStore.lastLocationUpdate.set(Date.now());
+      return;
+    }
     // Otherwise, calculate distance between previous and current location and add to total distance
     if (!globalStore.trackingPaused.get()) {
       if (!globalStore.isFirstTrackingRecord.get()) {
