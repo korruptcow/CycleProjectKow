@@ -25,6 +25,7 @@ const flagStore = observable({
   showDistance: getQueryParamFlag('showDistance'),
   showHeading: getQueryParamFlag('showHeading'),
   showHeartrate: getQueryParamFlag('showHeartrate'),
+  showRpm: getQueryParamFlag('showRpm'),
   showMetrics: getQueryParamFlag('showMetrics'),
   showSpeed: getQueryParamFlag('showSpeed'),
   splitDateTime: getQueryParamFlag('splitDateTime'),

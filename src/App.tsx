@@ -12,6 +12,8 @@ import useWebSocket from "react-use-websocket";
 import keyStore from "@store/keyStore.ts";
 import globalStore from "@store/globalStore.ts";
 import configStore from "@store/configStore.ts";
+import Distance from "@components/Distance";
+import Speed from "@components/Speed";
 
 function App() {
 
@@ -214,6 +216,8 @@ function App() {
         <div className="react-rtirl-container">
             <Map/>
             <Metrics/>
+            <Distance/>
+            <Speed/>
             <Neighbourhood/>
             <Rotator/>
         </div>

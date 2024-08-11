@@ -13,6 +13,9 @@ const globalStore = observable({
     geocode: {},
     heading: 0,
     heartrate: 0,
+    revolutions: 0,
+    rpm: 0,
+    prevRpmUpdateTime: 0,
     location: {latitude: 0, longitude: 0},
     locationData: {...defaultWeatherValues},
     neighbourhood: '',
@@ -20,6 +23,7 @@ const globalStore = observable({
         latitude: 0,
         longitude: 0,
     },
+    updatedAt: 0,
     sessionId: '',
     speed: 0,
     streamElements: {

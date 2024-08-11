@@ -1,0 +1,36 @@
+.speed-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  bottom: 8px;
+  font-family: 'Knewave', sans-serif;
+  font-size: 32px;
+  height: fit-content;
+  margin-bottom: 10px;
+  position: absolute;
+  left: 0;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  width: 250px;
+}
+
+.speed-text {
+  text-align: right;
+  justify-content: flex-end;
+  flex-grow: 1;
+  max-width: 150px;
+}
+
+.speed-value {
+  width: 100%;
+  text-align: right;
+}
+
+.dropdown-style-cropped {
+  border-radius: 0 32px 32px 0;
+  background-color: #00000099;
+  padding: 1rem;
+  box-sizing: border-box;
+  color: rgba(255,255,255,0.8);
+  background-blend-mode: overlay;
+}
