@@ -72,6 +72,7 @@ const handleDistance = () => {
         globalStore.lastLocationUpdate.set(Date.now());
       } else {
         globalStore.isFirstTrackingRecord.set(false);
+        globalStore.lastLocationUpdate.set(Date.now());
       }
     }
 
