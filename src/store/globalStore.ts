@@ -42,6 +42,8 @@ const globalStore = observable({
     subRatio: 0.3,
     donationRatio: 0.1,
     trackingPaused: false,
+    isFirstTrackingRecord: false,
+    lastLocationUpdate: 0,
     currency: '€',
     zoneId: 'Europe/Paris',
 });
