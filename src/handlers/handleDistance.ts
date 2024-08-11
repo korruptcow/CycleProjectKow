@@ -18,7 +18,8 @@ const handleDistance = () => {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
+    let d = R * c; // Distance in km
+    if (d > 1) d = 0;
     return d;
   };
 
@@ -27,37 +28,51 @@ const handleDistance = () => {
     return deg * (Math.PI / 180);
   };
 
+  globalStore.trackingPaused.onChange((trackingPaused) => {
+    if (!trackingPaused.value) {
+      globalStore.isFirstTrackingRecord.set(true);
+    }
+  });
+
   // Check for a sessionId, reset totalDistance if it changes as this indicates stream start.
   globalStore.sessionId.onChange((sessionId) => {
     if (sessionId.value && sessionId.value !== sessionId.getPrevious()) {
       globalStore.sessionDistance.set(0)
+      globalStore.isFirstTrackingRecord.set(true);
     }
   })
 
   // Observe location changes and calculate distance
   globalStore.location.onChange((location) => {
     // Ignore location and return if the previous lat/lon was 0 - this indicates cold start - GPS often jumps from 0 to new location.
-    if (!location.getPrevious().latitude && !location.getPrevious().longitude) return
+    if (!location.getPrevious().latitude && !location.getPrevious().longitude) return;
+    if (globalStore.lastLocationUpdate.get() !== 0 && Date.now() - globalStore.lastLocationUpdate.get() > 60_000) return;
     // Otherwise, calculate distance between previous and current location and add to total distance
     if (!globalStore.trackingPaused.get()) {
-      globalStore.totalDistance.set(globalStore.totalDistance.get() + getDistanceFromLatLonInKm(
-          location.getPrevious().latitude,
-          location.getPrevious().longitude,
-          location.value.latitude,
-          location.value.longitude
-      ));
-      globalStore.sessionDistance.set(globalStore.sessionDistance.get() + getDistanceFromLatLonInKm(
-          location.getPrevious().latitude,
-          location.getPrevious().longitude,
-          location.value.latitude,
-          location.value.longitude
-      ));
-      globalStore.goalDistance.set(globalStore.goalDistance.get() - getDistanceFromLatLonInKm(
-          location.getPrevious().latitude,
-          location.getPrevious().longitude,
-          location.value.latitude,
-          location.value.longitude
-      ));
+      if (!globalStore.isFirstTrackingRecord.get()) {
+        globalStore.totalDistance.set(globalStore.totalDistance.get() + getDistanceFromLatLonInKm(
+            location.getPrevious().latitude,
+            location.getPrevious().longitude,
+            location.value.latitude,
+            location.value.longitude
+        ));
+        globalStore.sessionDistance.set(globalStore.sessionDistance.get() + getDistanceFromLatLonInKm(
+            location.getPrevious().latitude,
+            location.getPrevious().longitude,
+            location.value.latitude,
+            location.value.longitude
+        ));
+        globalStore.goalDistance.set(globalStore.goalDistance.get() - getDistanceFromLatLonInKm(
+            location.getPrevious().latitude,
+            location.getPrevious().longitude,
+            location.value.latitude,
+            location.value.longitude
+        ));
+
+        globalStore.lastLocationUpdate.set(Date.now());
+      } else {
+        globalStore.isFirstTrackingRecord.set(false);
+      }
     }
 
   })
