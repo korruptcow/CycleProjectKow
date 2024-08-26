@@ -31,7 +31,7 @@ const useListener = () => {
         location: data.location,
         heartRate: data.heartRate,
         revolutions: data.revolutions,
-        speed: (data.speed * 3.6),
+        speed: (data.speed * 3.6) | 0,
         updatedAt: data.updatedAt,
       }));
     });
