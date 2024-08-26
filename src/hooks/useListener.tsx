@@ -10,6 +10,8 @@ interface IListenerProps {
   location: { latitude: number, longitude: number };
   reportedAt: number;
   speed: number;
+  heartRate: number;
+  revolutions: number;
   updatedAt: number;
 }
 
@@ -26,7 +28,10 @@ const useListener = () => {
         altitude: data.altitude,
         heading: data.heading,
         location: data.location,
-        speed: (data.speed * 3.6),
+        heartRate: data.heartRate,
+        revolutions: data.revolutions,
+        speed: (data.speed * 3.6) | 0,
+        updatedAt: data.updatedAt,
       }));
     });
     const unsubscribeSessionListener = forPullKey(pullKey).addListener((data: ISessionListenerProps) => {
