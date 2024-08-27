@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
 import Map from '@components/Map';
 import Metrics from '@components/Metrics';
@@ -51,14 +51,14 @@ function App() {
         }
 
         if (data.includes(`:End of /NAMES list\r\n`)) {
-            console.info(`Successfully joined the channel #${keyStore.twitchUserName.get()}.`);
+            console.info(`Successfully joined the channel #${keyStore.twitchChannelName.get()}.`);
         }
 
         parseCommand(data);
     };
 
     const sendChatMessage = (message: string) => {
-        sendMessage(`PRIVMSG #${keyStore.twitchUserName.get()} :${message}`);
+        sendMessage(`PRIVMSG #${keyStore.twitchChannelName.get()} :${message}`);
     };
 
     const sendPong = (message: string) => {
@@ -134,18 +134,18 @@ function App() {
                 break;
             case configStore.commands.get().showMap:
                 globalStore.hideMap.set(false);
-                sendChatMessage(`Map shown ${command.userName}.`);
-                console.info(`Map shown ${command.userName}.`);
+                sendChatMessage(`Map shown by ${command.userName}.`);
+                console.info(`Map shown by ${command.userName}.`);
                 break;
             case configStore.commands.get().hideChatUpdate:
                 globalStore.hideChatUpdate.set(true);
-                sendChatMessage(`Messages de suivi désactivé par ${command.userName}.`);
-                console.info(`Messages de suivi désactivé par ${command.userName}.`);
+                sendChatMessage(`Update messages deactivated by ${command.userName}.`);
+                console.info(`Update messages deactivated by ${command.userName}.`);
                 break;
             case configStore.commands.get().showChatUpdate:
                 globalStore.hideChatUpdate.set(false);
-                sendChatMessage(`Messages de suivi activé par ${command.userName}.`);
-                console.info(`Messages de suivi activé par ${command.userName}.`);
+                sendChatMessage(`Update messages activated by ${command.userName}.`);
+                console.info(`Update messages activated by ${command.userName}.`);
                 break;
             default:
                 console.warn('Unknown mod command type:', command.type);
@@ -158,34 +158,34 @@ function App() {
             case configStore.commands.get().addAmountKm:
                 if (command.target === configStore.targets.get().goalDistance) {
                     globalStore.goalDistance.set(globalStore.goalDistance.get() + command.value);
-                    sendChatMessage(`Ajout de ${command.value} km au compteur du goal.`);
+                    sendChatMessage(`Add ${command.value} km/mi to the goal.`);
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() + command.value);
-                    sendChatMessage(`Ajout de ${command.value} km à la distance totale.`);
+                    sendChatMessage(`Add ${command.value} km/mi to the total.`);
                 } else if (command.target === configStore.targets.get().sessionDistance) {
                     globalStore.sessionDistance.set(globalStore.sessionDistance.get() + command.value);
-                    sendChatMessage(`Ajout de ${command.value} km à la distance du jour.`);
+                    sendChatMessage(`Add ${command.value} km/mi to today's trip.`);
                 }
                 break;
             case configStore.commands.get().minusAmountKm:
                 if (command.target === configStore.targets.get().goalDistance) {
                     globalStore.goalDistance.set(globalStore.goalDistance.get() - command.value);
-                    sendChatMessage(`Suppression de ${command.value} km au compteur du goal.`);
+                    sendChatMessage(`Removed ${command.value} km/mi from goal.`);
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() - command.value);
-                    sendChatMessage(`Suppression de ${command.value} km à la distance totale.`);
+                    sendChatMessage(`Removed ${command.value} km/mi from total.`);
                 } else if (command.target === configStore.targets.get().sessionDistance) {
                     globalStore.sessionDistance.set(globalStore.sessionDistance.get() - command.value);
-                    sendChatMessage(`Suppression de ${command.value} km à la distance du jour.`);
+                    sendChatMessage(`Removed ${command.value} km/mi to today's trip.`);
                 }
                 break;
             case configStore.commands.get().updateRate:
                 if (command.target === configStore.targets.get().tip) {
                     globalStore.donationRatio.set(command.value);
-                    sendChatMessage(`Distance per 1${globalStore.currency.get()} ${command.value} km.`);
+                    sendChatMessage(`Distance per 1${globalStore.currency.get()} ${command.value} km/mi.`);
                 } else if (command.target === configStore.targets.get().sub) {
                     globalStore.subRatio.set(command.value);
-                    sendChatMessage(`Distance per 1 sub ${command.value} km.`);
+                    sendChatMessage(`Distance per 1 sub ${command.value} km/mi.`);
                 }
                 break;
             // add cases here
@@ -206,11 +206,12 @@ function App() {
 
     const authenticateAndJoin = () => {
         const twitchUserToken = keyStore.twitchUserToken.get();
+        const twitchChannelName = keyStore.twitchChannelName.get()
         const twitchUserName = keyStore.twitchUserName.get();
 
         sendMessage(`PASS oauth:${twitchUserToken}`);
         sendMessage(`NICK ${twitchUserName}`);
-        sendMessage(`JOIN #${twitchUserName}`);
+        sendMessage(`JOIN #${twitchChannelName}`);
         sendMessage('CAP REQ :twitch.tv/commands twitch.tv/tags');
     };
     // Propagate events to global state
@@ -239,7 +240,7 @@ function App() {
 
         // Cleanup function to clear the interval when the component unmounts
         return () => clearInterval(intervalId);
-    }, [ command, lastSentDistance ])
+    }, [ command, lastSentDistance, sendChatMessage ])
     return (
         <div className="react-rtirl-container">
             <Map/>

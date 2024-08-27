@@ -17,9 +17,9 @@ const Distance = () => {
         <div className="distance-container dropdown-style">
             <img src='assets/distance.svg' alt="Distance Icon" style={{ width: '54px', height: '54px'}} />
             <div className="distance-text" style={{display: showDistance ? '' : 'none'}}>
-                Jour: {useImperial ? sessionImperial : sessionMetric} <br/>
+                Day: {useImperial ? sessionImperial : sessionMetric} <br/>
                 Total: {useImperial ? totalImperial : totalMetric} <br/>
-                Restant: {useImperial ? goalImperial : goalMetric}
+                Left: {useImperial ? goalImperial : goalMetric}
             </div>
         </div>
     )

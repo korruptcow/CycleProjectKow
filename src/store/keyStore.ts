@@ -9,6 +9,7 @@ const streamElementsKey = import.meta.env.VITE_STREAMELEMENTS_KEY || queryParams
 const timezoneKey = import.meta.env.VITE_TIMEZONE_KEY || queryParams.get('timezoneKey') || '';
 const weatherKey = import.meta.env.VITE_OPENWEATHER_KEY || queryParams.get('weatherKey') || '';
 const twitchUserName = import.meta.env.VITE_TWITCH_USER_NAME || queryParams.get('twitch-user-name') || '';
+const channelName = import.meta.env.VITE_TWITCH_CHANNEL_NAME || queryParams.get('twitch-channel-name') || '';
 const twitchUserToken = import.meta.env.VITE_TWITCH_USER_TOKEN || queryParams.get('twitch-user-token') || '';
 const twitchAppId = import.meta.env.VITE_TWITCH_APP_ID || queryParams.get('twitch-app-id') || '';
 const twitchAppToken = import.meta.env.VITE_TWITCH_APP_TOKEN || queryParams.get('twitch-app-token') || '';
@@ -21,6 +22,7 @@ const keyStore = observable({
   streamElementsChannel: '',
   timezoneKey: timezoneKey,
   weatherKey: weatherKey,
+  twitchChannelName: channelName,
   twitchUserName: twitchUserName,
   twitchUserToken: twitchUserToken,
   twitchAppId: twitchAppId,
