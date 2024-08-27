@@ -1,6 +1,6 @@
 import globalStore from "@store/globalStore";
 
-const handleDistance = () => {
+const handleCyclingCadence = () => {
   const getRpm = (
       prevRevs: number,
       revs:number
@@ -22,4 +22,4 @@ const handleDistance = () => {
   })
 };
 
-handleDistance();
+handleCyclingCadence();
