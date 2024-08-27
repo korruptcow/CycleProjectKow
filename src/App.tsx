@@ -204,6 +204,8 @@ function App() {
     useEffect(() => {
         import('@handlers/handleDateTime')
         import('@handlers/handleDistance')
+        import('@handlers/handleSpeed')
+        import('@handlers/handleCyclingCadence')
         import('@handlers/handleMapZoomInterval')
         import('@handlers/handleStreamElements')
         import('@handlers/handleTheme')
