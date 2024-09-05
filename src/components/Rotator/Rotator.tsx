@@ -1,7 +1,6 @@
 import { useSpring, animated } from 'react-spring';
 
 import RotatingElements from '@components/RotatingElements';
-import StreamElements from '@components/StreamElements';
 import Weather from '@components/Weather';
 
 import flagStore from '@store/flagStore';
@@ -16,7 +15,7 @@ const Rotator = () => {
 
   const rotatorProps = useSpring(handleSpringProps('rotator', show))
 
-  const components = [<Weather />, <StreamElements />]
+  const components = [<Weather />, <div/>]
 
   if (disableAnimation) {
     return (

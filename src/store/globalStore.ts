@@ -39,6 +39,7 @@ const globalStore = observable({
     theme: 'mapbox://styles/mapbox/streets-v12',
     time: '',
     hideMap: false,
+    hideChatUpdate: true,
     sessionDistance: loadFloatFromLocalStorage('sessionDistance'),
     totalDistance: loadFloatFromLocalStorage('totalDistance'),
     goalDistance: loadFloatFromLocalStorage('goalDistance'),

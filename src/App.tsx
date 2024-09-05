@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
 import Map from '@components/Map';
 import Metrics from '@components/Metrics';
@@ -16,6 +16,7 @@ import Distance from "@components/Distance";
 import Speed from "@components/Speed";
 
 function App() {
+    const [lastSentDistance, setLastSentDistance] = useState<number | null>(null);
 
     const {sendMessage, lastJsonMessage: command} = useWebSocket('wss://irc-ws.chat.twitch.tv:443', {
         onOpen: () => {
@@ -73,6 +74,8 @@ function App() {
                 configStore.commands.get().pauseTracking,
                 configStore.commands.get().unpauseTracking,
                 configStore.commands.get().resetCurrentSession,
+                configStore.commands.get().hideChatUpdate,
+                configStore.commands.get().showChatUpdate,
                 configStore.commands.get().hideMap,
                 configStore.commands.get().showMap
             ];
@@ -132,6 +135,16 @@ function App() {
                 globalStore.hideMap.set(false);
                 sendChatMessage(`Map affiché par ${command.userName}.`);
                 console.info(`Map affiché par ${command.userName}.`);
+                break;
+            case configStore.commands.get().hideChatUpdate:
+                globalStore.hideChatUpdate.set(true);
+                sendChatMessage(`Messages de suivi désactivé par ${command.userName}.`);
+                console.info(`Messages de suivi désactivé par ${command.userName}.`);
+                break;
+            case configStore.commands.get().showChatUpdate:
+                globalStore.hideChatUpdate.set(false);
+                sendChatMessage(`Messages de suivi activé par ${command.userName}.`);
+                console.info(`Messages de suivi activé par ${command.userName}.`);
                 break;
             default:
                 console.warn('Unknown mod command type:', command.type);
@@ -213,7 +226,19 @@ function App() {
         import('@handlers/handleTheme')
         import('@handlers/handleWeather')
         import('@handlers/handleNeighbourhood')
-    }, [ command ])
+        const intervalId = setInterval(() => {
+            const currentDistance = globalStore.goalDistance.get();
+
+            if (currentDistance !== lastSentDistance && !globalStore.hideChatUpdate.get()) {
+                const formattedDistance = currentDistance.toFixed(2);
+                sendChatMessage(`Il reste ${formattedDistance}km à parcourir !`);
+                setLastSentDistance(currentDistance);
+            }
+        }, 10 * 60 * 1000); // 10 minutes in milliseconds
+
+        // Cleanup function to clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+    }, [ command, lastSentDistance ])
     return (
         <div className="react-rtirl-container">
             <Map/>
