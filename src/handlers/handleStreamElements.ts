@@ -25,7 +25,7 @@ const handleStreamElements = () => {
     switch(eventData.type) {
       case 'subscriber':
         if (eventData.data) {
-          globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.subRatio.get() * eventData.data.amount);
+          globalStore.goalDistance.set(globalStore.goalDistance.get() + globalStore.subRatio.get() * 1);
         }
         break;
       case 'tip':
