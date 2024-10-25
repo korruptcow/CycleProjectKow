@@ -14,6 +14,7 @@ import globalStore from "@store/globalStore.ts";
 import configStore from "@store/configStore.ts";
 import Distance from "@components/Distance";
 import Speed from "@components/Speed";
+import Prices from "@components/Prices";
 
 function App() {
     const [lastSentDistance, setLastSentDistance] = useState<number | null>(null);
@@ -245,6 +246,7 @@ function App() {
             <Metrics/>
             <Distance/>
             <Speed/>
+            <Prices/>
             <Neighbourhood/>
             <Rotator/>
         </div>

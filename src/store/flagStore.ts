@@ -28,11 +28,13 @@ const flagStore = observable({
   showRpm: getQueryParamFlag('showRpm'),
   showMetrics: getQueryParamFlag('showMetrics'),
   showSpeed: getQueryParamFlag('showSpeed'),
+  showPrices: getQueryParamFlag('showPrices'),
   splitDateTime: getQueryParamFlag('splitDateTime'),
   streamElementsSubscribed: false,
   theme: queryParams.get('theme') || 'mapbox-japan',
   timeAtBottom: getQueryParamFlag('timeAtBottom'),
   useImperial: getQueryParamFlag('useImperial'),
+  currency: queryParams.get('currency') || 'dollar',
   zoomLevels: queryParams.get('zoomLevels') || '',
   zoomLevelPairs: parseZoomLevels(queryParams.get('zoomLevels') || ''),
 });

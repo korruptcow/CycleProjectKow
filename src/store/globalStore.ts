@@ -44,8 +44,8 @@ const globalStore = observable({
     totalDistance: loadFloatFromLocalStorage('totalDistance'),
     goalDistance: loadFloatFromLocalStorage('goalDistance'),
     modsWhitelist: observable(loadListFromLocalStorage('modsWhitelist')),
-    subRatio: 0.3,
-    donationRatio: 0.1,
+    subRatio: loadFloatFromLocalStorage('subRatio'),
+    donationRatio: loadFloatFromLocalStorage('donationRatio'),
     trackingPaused: false,
     isFirstTrackingRecord: false,
     lastLocationUpdate: 0,
@@ -71,6 +71,13 @@ globalStore.modsWhitelist.onChange(() => {
     saveToLocalStorage('modsWhitelist', globalStore.modsWhitelist.peek());
 });
 
+globalStore.subRatio.onChange(() => {
+    saveToLocalStorage('subRatio', globalStore.subRatio.get());
+});
+
+globalStore.donationRatio.onChange(() => {
+    saveToLocalStorage('donationRatio', globalStore.donationRatio.get());
+});
 
 
 export default globalStore;
