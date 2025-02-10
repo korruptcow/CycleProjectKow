@@ -14,9 +14,9 @@ const Distance = () => {
     const {metric: goalMetric, imperial: goalImperial} = valueFormatter('distance', goalDistance);
 
     return (
-        <div className="distance-container dropdown-style">
+        <div className="distance-container dropdown-style" style={{display: showDistance ? '' : 'none'}}>
             <img src='assets/distance.svg' alt="Distance Icon" style={{ width: '54px', height: '54px'}} />
-            <div className="distance-text" style={{display: showDistance ? '' : 'none'}}>
+            <div className="distance-text">
                 Day: {useImperial ? sessionImperial : sessionMetric} <br/>
                 Total: {useImperial ? totalImperial : totalMetric} <br/>
                 Left: {useImperial ? goalImperial : goalMetric}
