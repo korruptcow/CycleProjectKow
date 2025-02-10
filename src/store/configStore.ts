@@ -12,6 +12,9 @@ const configStore = observable({
         resetCurrentSession: 'cycleRestartSession',
         hideMap: 'cycleHideMap',
         showMap: 'cycleShowMap',
+        hideChatUpdate: 'cycleHideChatUpdate',
+        showChatUpdate: 'cycleShowChatUpdate',
+
     },
     targets: {
         goalDistance: 'goalDistance',

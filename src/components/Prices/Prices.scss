@@ -1,0 +1,39 @@
+.prices-container {
+  display: flex;
+  flex-direction: column;
+  top: 128px;
+  font-family: 'Knewave', sans-serif;
+  font-size: 24px;
+  height: fit-content;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  position: absolute;
+  left: 0;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  width: 230px;
+}
+
+.prices {
+  font-weight:600;
+  flex-direction: column;
+  padding-left: 5px;
+}
+
+.price-text {
+  justify-content: flex-end;
+  max-width: 200px;
+}
+
+.price-value {
+  width: 100%;
+  text-align: right;
+}
+
+.dropdown-style-cropped {
+  border-radius: 0 32px 32px 0;
+  background-color: #00000099;
+  padding: 1rem;
+  box-sizing: border-box;
+  color: rgba(255,255,255,0.8);
+  background-blend-mode: overlay;
+}

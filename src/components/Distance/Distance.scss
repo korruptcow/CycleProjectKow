@@ -1,16 +1,19 @@
-.metrics-container {
+.distance-container {
   display: flex;
-  flex-direction: column;
+  bottom: 8px;
   font-family: 'Knewave', sans-serif;
   font-size: 32px;
   height: fit-content;
-  margin: 15px;
+  margin-bottom: 10px;
+  margin-right: 10px;
   position: absolute;
-  top:0;
-  left:0;
-  text-align: right;
+  right: 266px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   width: 400px;
+}
+
+.distance-text {
+  text-align: right;
 }
 
 .dropdown-style {

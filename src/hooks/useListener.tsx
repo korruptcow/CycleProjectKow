@@ -23,6 +23,7 @@ const useListener = () => {
   const { pullKey } = keyStore.get();
   useEffect(() => {
     const unsubscribeListener = forPullKey(pullKey).addListener((data: IListenerProps) => {
+      console.log(data)
       globalStore.set((prevState) => ({
         ...prevState,
         altitude: data.altitude,

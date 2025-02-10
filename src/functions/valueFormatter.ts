@@ -13,6 +13,13 @@ const valueFormatter = (type: string, inputValue: number) => {
       imperial: `${(inputValue * 0.621371).toFixed(2)} mi`
     }
   }
+  // distance for price from km to miles
+  if (type === 'distancePrice') {
+    return {
+      metric: `${(inputValue).toFixed(0)} km`,
+      imperial: `${(inputValue * 0.621371).toFixed(0)} mi`
+    }
+  }
   // speed from kph to mph
   if (type === 'speed') {
     return {
@@ -23,7 +30,7 @@ const valueFormatter = (type: string, inputValue: number) => {
   // temperature from celsius to fahrenheit
   if (type === 'temperature') {
     return {
-      metric: `${(inputValue).toFixed(2)} °C`,
+      metric: `${(inputValue).toFixed(0)} °C`,
       imperial: `${(inputValue * 9 / 5 + 32).toFixed(2)} °F`
     }
   }

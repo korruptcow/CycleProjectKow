@@ -12,8 +12,12 @@ import useWebSocket from "react-use-websocket";
 import keyStore from "@store/keyStore.ts";
 import globalStore from "@store/globalStore.ts";
 import configStore from "@store/configStore.ts";
+import Distance from "@components/Distance";
+import Speed from "@components/Speed";
+import Prices from "@components/Prices";
 
 function App() {
+    const [lastSentDistance, setLastSentDistance] = useState<number | null>(null);
 
     const {sendMessage, lastJsonMessage: command} = useWebSocket('wss://irc-ws.chat.twitch.tv:443', {
         onOpen: () => {
@@ -71,6 +75,8 @@ function App() {
                 configStore.commands.get().pauseTracking,
                 configStore.commands.get().unpauseTracking,
                 configStore.commands.get().resetCurrentSession,
+                configStore.commands.get().hideChatUpdate,
+                configStore.commands.get().showChatUpdate,
                 configStore.commands.get().hideMap,
                 configStore.commands.get().showMap
             ];
@@ -128,8 +134,18 @@ function App() {
                 break;
             case configStore.commands.get().showMap:
                 globalStore.hideMap.set(false);
-                sendChatMessage(`Map shown by ${command.userName}.`);
-                console.info(`Map shown by ${command.userName}.`);
+                sendChatMessage(`Map shown ${command.userName}.`);
+                console.info(`Map shown ${command.userName}.`);
+                break;
+            case configStore.commands.get().hideChatUpdate:
+                globalStore.hideChatUpdate.set(true);
+                sendChatMessage(`Messages de suivi désactivé par ${command.userName}.`);
+                console.info(`Messages de suivi désactivé par ${command.userName}.`);
+                break;
+            case configStore.commands.get().showChatUpdate:
+                globalStore.hideChatUpdate.set(false);
+                sendChatMessage(`Messages de suivi activé par ${command.userName}.`);
+                console.info(`Messages de suivi activé par ${command.userName}.`);
                 break;
             default:
                 console.warn('Unknown mod command type:', command.type);
@@ -142,25 +158,25 @@ function App() {
             case configStore.commands.get().addAmountKm:
                 if (command.target === configStore.targets.get().goalDistance) {
                     globalStore.goalDistance.set(globalStore.goalDistance.get() + command.value);
-                    sendChatMessage(`Added ${command.value} km to goalDistance.`);
+                    sendChatMessage(`Ajout de ${command.value} km au compteur du goal.`);
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() + command.value);
-                    sendChatMessage(`Added ${command.value} km to totalDistance.`);
+                    sendChatMessage(`Ajout de ${command.value} km à la distance totale.`);
                 } else if (command.target === configStore.targets.get().sessionDistance) {
                     globalStore.sessionDistance.set(globalStore.sessionDistance.get() + command.value);
-                    sendChatMessage(`Added ${command.value} km to today's distance.`);
+                    sendChatMessage(`Ajout de ${command.value} km à la distance du jour.`);
                 }
                 break;
             case configStore.commands.get().minusAmountKm:
                 if (command.target === configStore.targets.get().goalDistance) {
                     globalStore.goalDistance.set(globalStore.goalDistance.get() - command.value);
-                    sendChatMessage(`Removed ${command.value} km from goalDistance.`);
+                    sendChatMessage(`Suppression de ${command.value} km au compteur du goal.`);
                 } else if (command.target === configStore.targets.get().totalDistance) {
                     globalStore.totalDistance.set(globalStore.totalDistance.get() - command.value);
-                    sendChatMessage(`Removed ${command.value} km from totalDistance.`);
+                    sendChatMessage(`Suppression de ${command.value} km à la distance totale.`);
                 } else if (command.target === configStore.targets.get().sessionDistance) {
                     globalStore.sessionDistance.set(globalStore.sessionDistance.get() - command.value);
-                    sendChatMessage(`Removed ${command.value} km from sessionDistance.`);
+                    sendChatMessage(`Suppression de ${command.value} km à la distance du jour.`);
                 }
                 break;
             case configStore.commands.get().updateRate:
@@ -205,16 +221,32 @@ function App() {
         import('@handlers/handleDateTime')
         import('@handlers/handleDistance')
         import('@handlers/handleSpeed')
+        import('@handlers/handleCyclingCadence')
         import('@handlers/handleMapZoomInterval')
         import('@handlers/handleStreamElements')
         import('@handlers/handleTheme')
         import('@handlers/handleWeather')
         import('@handlers/handleNeighbourhood')
-    }, [ command ])
+        const intervalId = setInterval(() => {
+            const currentDistance = globalStore.goalDistance.get();
+
+            if (currentDistance !== lastSentDistance && !globalStore.hideChatUpdate.get()) {
+                const formattedDistance = currentDistance.toFixed(2);
+                sendChatMessage(`${formattedDistance} km/mi left to reach the goal !`);
+                setLastSentDistance(currentDistance);
+            }
+        }, 10 * 60 * 1000); // 10 minutes
+
+        // Cleanup function to clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+    }, [ command, lastSentDistance ])
     return (
         <div className="react-rtirl-container">
             <Map/>
             <Metrics/>
+            <Distance/>
+            <Speed/>
+            <Prices/>
             <Neighbourhood/>
             <Rotator/>
         </div>

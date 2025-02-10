@@ -3,9 +3,11 @@ import globalStore from "@store/globalStore"
 
 const Heartrate = () => {
   const { showHeartrate } = flagStore.get();
-  const { heartrate } = globalStore.get();
+  const heartrate = globalStore.heartrate.get();
   return (
-    <div className="heart-text" style={{ display: showHeartrate ? '' : 'none' }}>{heartrate === 0 ? `Heartrate: ${heartrate} bpm` : ''}</div>
+    <div className="heart-text" style={{ display: showHeartrate ? '' : 'none' }}>
+      Heartrate: {heartrate} bpm
+    </div>
   )
 }
 
