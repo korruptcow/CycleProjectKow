@@ -28,7 +28,7 @@ const handleDateTime = async () => {
   }
 };
 
-const lang = 'fr';
+const lang = 'en';
 const date = 'ccc, MMM dd, yyyy';
 const time = 'HH:mm:ss';
 const datetime = 'ccc, MMM dd, yyyy | HH:mm:ss';
