@@ -97,15 +97,15 @@ function App() {
         console.log('Executing mod command', command);
         switch (command.type) {
             case configStore.commands.get().addModerator:
-                if (!globalStore.modsWhitelist.peek().includes(command.targetUser)) {
-                    addMod(command.targetUser)
+                if (command.targetUser?.trim() && !globalStore.modsWhitelist.peek().includes(command.targetUser)) {
+                    addMod(command.targetUser.toLowerCase())
                     sendChatMessage(`${command.userName} added ${command.targetUser} to the whitelist.`);
                     console.info(`${command.userName}  added ${command.targetUser} to the whitelist.`);
                 }
                 break;
             case configStore.commands.get().removeModerator:
-                if (globalStore.modsWhitelist.peek().includes(command.targetUser)) {
-                    removeMod(command.targetUser)
+                if (command.targetUser?.trim() &&globalStore.modsWhitelist.peek().includes(command.targetUser)) {
+                    removeMod(command.targetUser.toLowerCase())
                     sendChatMessage(`${command.userName} removed ${command.targetUser} from the whitelist.`);
                     console.info(`${command.userName} removed ${command.targetUser} from the whitelist.`);
                 }
