@@ -5,6 +5,7 @@ const handleTheme = () => {
   const { theme } = flagStore.get();
   const themes = {
     'mapbox-dark': 'mapbox://styles/mapbox/dark-v11',
+    'mapbox-raiden': 'mapbox://styles/mvp-raiden/cm70ua4si00s801s10kvh5ba3',
     'mapbox-japan': 'mapbox://styles/mapbox-map-design/ckt20wgoy1awp17ms7pyygigf',
     'mapbox-light': 'mapbox://styles/mapbox/light-v11',
     'mapbox-navigation-day': 'mapbox://styles/mapbox/navigation-day-v1',

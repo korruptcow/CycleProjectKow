@@ -3,13 +3,13 @@
   align-items: center;
   justify-content: flex-start;
   flex-direction: row;
-  bottom: 8px;
+  bottom: 50px;
   font-family: 'Knewave', sans-serif;
   font-size: 32px;
   height: fit-content;
   margin-bottom: 10px;
   position: absolute;
-  left: 0;
+  right: 266px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   width: 250px;
 }
@@ -28,7 +28,7 @@
 
 .dropdown-style-cropped {
   border-radius: 0 32px 32px 0;
-  background-color: #00000099;
+  background: transparent;
   padding: 1rem;
   box-sizing: border-box;
   color: rgba(255,255,255,0.8);

@@ -15,10 +15,12 @@ import configStore from "@store/configStore.ts";
 import Distance from "@components/Distance";
 import Speed from "@components/Speed";
 import Prices from "@components/Prices";
+import { setSendSbVariableFunction } from '@handlers/handleStreamerBot.ts'
 
 function App() {
     const [lastSentDistance, setLastSentDistance] = useState<number | null>(null);
 
+    // Twitch WebSocket
     const {sendMessage, lastJsonMessage: command} = useWebSocket('wss://irc-ws.chat.twitch.tv:443', {
         onOpen: () => {
             console.info('Opened web socket connection to Twitch IRC');
@@ -32,6 +34,58 @@ function App() {
         reconnectAttempts: 1_000_000,
         reconnectInterval: 1000,
     });
+
+    // StreamerBot WebSocket
+    const { sendMessage: sendSbMessage } = useWebSocket('ws://127.0.0.1:8082/', {
+        onOpen: () => {
+            console.info('Connected to StreamerBot WebSocket');
+            sendInitialValues();
+        },
+        onMessage: (message) => handleSbMessage(message),
+        onClose: () => console.info('StreamerBot WebSocket connection closed'),
+        onError: (event) => console.error('StreamerBot WebSocket error', event),
+        retryOnError: true,
+        shouldReconnect: () => true,
+        reconnectAttempts: 1_000_000,
+        reconnectInterval: 1000,
+    });
+
+    const handleSbMessage = (message: MessageEvent) => {
+        try {
+            const data = JSON.parse(message.data);
+            if (data.status === 'ok') {
+                console.debug('StreamerBot acknowledged request', data.id);
+            } else if (data.error) {
+                console.error('StreamerBot error for request', data.id, data.error);
+            }
+        } catch (e) {
+            console.warn('Received non-JSON message from StreamerBot:', e);
+        }
+    };
+
+    // This function will be used by the handleSbWebSocket handler
+    const sendSbVariable = (variableName: string, value: number) => {
+        const payload = {
+            request: "DoAction",
+            action: {
+                id: "dcb19855-78c1-4bb0-8fa6-ab716ae00489",
+                name: "sbCycleUpdate"
+            },
+            args: {
+                value,
+                variableName,
+            },
+            id: "dcb19855-78c1-4bb0-8fa6-ab716ae00489"
+        };
+        sendSbMessage(JSON.stringify(payload));
+    };
+
+    const sendInitialValues = () => {
+        const { totalDistance, sessionDistance, goalDistance } = globalStore.get();
+        sendSbVariable('reactTotalDistance', totalDistance);
+        sendSbVariable('reactSessionDistance', sessionDistance);
+        sendSbVariable('reactGoalDistance', goalDistance);
+    };
 
     const handleMessage = (message: MessageEvent) => {
         const data = message.data;
@@ -216,7 +270,7 @@ function App() {
     };
     // Propagate events to global state
     useListener();
-
+    setSendSbVariableFunction(sendSbVariable)
     // Run handlers
     useEffect(() => {
         import('@handlers/handleDateTime')
@@ -228,6 +282,7 @@ function App() {
         import('@handlers/handleTheme')
         import('@handlers/handleWeather')
         import('@handlers/handleNeighbourhood')
+        import('@handlers/handleStreamerBot')
         const intervalId = setInterval(() => {
             const currentDistance = globalStore.goalDistance.get();
 
@@ -241,6 +296,7 @@ function App() {
         // Cleanup function to clear the interval when the component unmounts
         return () => clearInterval(intervalId);
     }, [ command, lastSentDistance, sendChatMessage ])
+
     return (
         <div className="react-rtirl-container">
             <Map/>
