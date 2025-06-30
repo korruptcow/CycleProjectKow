@@ -15,7 +15,9 @@ import configStore from "@store/configStore.ts";
 import Distance from "@components/Distance";
 import Speed from "@components/Speed";
 import Prices from "@components/Prices";
-import { setSendSbVariableFunction } from '@handlers/handleStreamerBot.ts'
+import {setSendSbTempFunction, setSendSbVariableFunction} from '@handlers/handleStreamerBot.ts'
+import valueFormatter from "@functions/valueFormatter.ts";
+import flagStore from "@store/flagStore.ts";
 
 function App() {
     const [lastSentDistance, setLastSentDistance] = useState<number | null>(null);
@@ -64,7 +66,7 @@ function App() {
     };
 
     // This function will be used by the handleSbWebSocket handler
-    const sendSbVariable = (variableName: string, value: number) => {
+    const sendSbVariable = (goal: number, session: number, total: number, headingDir: string, headingNum: string, speed: number, altitude: string) => {
         const payload = {
             request: "DoAction",
             action: {
@@ -72,8 +74,28 @@ function App() {
                 name: "sbCycleUpdate"
             },
             args: {
-                value,
-                variableName,
+                goal,
+                session,
+                total,
+                headingDir,
+                headingNum,
+                speed,
+                altitude
+            },
+            id: "dcb19855-78c1-4bb0-8fa6-ab716ae00489"
+        };
+        sendSbMessage(JSON.stringify(payload));
+    };
+
+    const sendSbTemp = (temp: string) => {
+        const payload = {
+            request: "DoAction",
+            action: {
+                id: "dcb19855-78c1-4bb0-8fa6-ab716ae00489",
+                name: "sbCycleUpdate"
+            },
+            args: {
+                temp
             },
             id: "dcb19855-78c1-4bb0-8fa6-ab716ae00489"
         };
@@ -81,10 +103,14 @@ function App() {
     };
 
     const sendInitialValues = () => {
-        const { totalDistance, sessionDistance, goalDistance } = globalStore.get();
-        sendSbVariable('reactTotalDistance', totalDistance);
-        sendSbVariable('reactSessionDistance', sessionDistance);
-        sendSbVariable('reactGoalDistance', goalDistance);
+        const { totalDistance, sessionDistance, goalDistance, heading, speed, altitude, locationData } = globalStore.get();
+        const { useImperial } = flagStore.get();
+        const temp = valueFormatter('temperature', locationData.main.temp);
+        const compass = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        const cardinal = compass[(((heading + 22.5) % 360) / 45) | 0];
+        const { metric, imperial } = valueFormatter('altitude', altitude['EGM96'])
+        sendSbVariable(goalDistance, sessionDistance, totalDistance, cardinal, heading.toFixed(0), speed, useImperial ? imperial : metric);
+        sendSbTemp(useImperial ? temp.imperial : temp.metric);
     };
 
     const handleMessage = (message: MessageEvent) => {
@@ -270,7 +296,8 @@ function App() {
     };
     // Propagate events to global state
     useListener();
-    setSendSbVariableFunction(sendSbVariable)
+    setSendSbVariableFunction(sendSbVariable);
+    setSendSbTempFunction(sendSbTemp);
     // Run handlers
     useEffect(() => {
         import('@handlers/handleDateTime')
